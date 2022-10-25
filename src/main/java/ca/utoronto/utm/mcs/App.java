@@ -12,7 +12,8 @@ public class App
     public static void main(String[] args) throws IOException
     {
         Server server = DaggerServerComponent.create().buildServer();
-
+        server.httpServer.createContext("/pokemon", new ReqHandler());
+        server.httpServer.start();
         // TODO Create Your Server Context Here, There Should Only Be One Context
         System.out.printf("Server started on port %d\n", port);
 
@@ -20,6 +21,10 @@ public class App
         Dotenv dotenv = Dotenv.load();
         String addr = dotenv.get("NEO4J_ADDR");
         System.out.println(addr);
+
+
+
+
 
     }
 }
