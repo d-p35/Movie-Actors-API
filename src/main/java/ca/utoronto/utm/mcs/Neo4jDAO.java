@@ -9,16 +9,14 @@ import org.neo4j.driver.Session;
 // go in this class
 public class Neo4jDAO {
     // TODO Complete This Class
-    private final Session session;
-    private final Driver driver;
-
-    private final String uriDb = "bolt://localhost:8080";
-    private final String username = "neo4j";
-    private final String password = "123456";
+    public final Session session;
+    public final Driver driver;
 
 
-    public Neo4jDAO() {
-        this.driver = GraphDatabase.driver(this.uriDb, AuthTokens.basic(this.username, this.password));
+
+
+    public Neo4jDAO(Driver driver) {
+        this.driver = driver;
         this.session = this.driver.session();
     }
 

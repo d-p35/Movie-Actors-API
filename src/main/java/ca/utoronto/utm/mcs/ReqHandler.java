@@ -6,11 +6,14 @@ import com.sun.net.httpserver.HttpHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 public class ReqHandler implements HttpHandler {
     public Neo4jDAO dao;
 
-    public ReqHandler() {
-        this.dao = new Neo4jDAO();
+    @Inject
+    public ReqHandler(Neo4jDAO neo4jDAO) {
+        this.dao = neo4jDAO;
     }
     // TODO Complete This Class
 
