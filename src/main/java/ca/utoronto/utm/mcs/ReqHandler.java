@@ -46,34 +46,38 @@ public class ReqHandler implements HttpHandler {
 
     }
     public void handlePut(HttpExchange exchange) throws IOException, JSONException {
+        String originalURI = "/api/v1";
+        String uri = exchange.getRequestURI().toString();
         String body = Utils.convert(exchange.getRequestBody());
-        try {
-            JSONObject deserialized = new JSONObject(body);
 
-            String name, actorId;
-
-            if (deserialized.length() == 2 && deserialized.has("name") && deserialized.has("actorID")
-                    ) {
-
-                name = deserialized.getString("name");
-                actorId = deserialized.getString("actorID");
-
-            } else {
-                exchange.sendResponseHeaders(400, -1);
-                return;
-            }
-
+        if(uri.equals(originalURI + "/addActor")) {
             try {
-                this.dao.insertActor(name, actorId);
+                JSONObject deserialized = new JSONObject(body);
+
+                String name, actorId;
+
+                if (deserialized.has("name") && deserialized.has("actorID")
+                ) {
+                    name = deserialized.getString("name");
+                    actorId = deserialized.getString("actorID");
+
+                } else {
+                    exchange.sendResponseHeaders(400, -1);
+                    return;
+                }
+
+                try {
+                    this.dao.insertActor(name, actorId);
+                } catch (Exception e) {
+                    exchange.sendResponseHeaders(500, -1);
+                    e.printStackTrace();
+                    return;
+                }
+                exchange.sendResponseHeaders(200, -1);
             } catch (Exception e) {
-                exchange.sendResponseHeaders(500, -1);
                 e.printStackTrace();
-                return;
+                exchange.sendResponseHeaders(500, -1);
             }
-            exchange.sendResponseHeaders(200, -1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            exchange.sendResponseHeaders(500, -1);
         }
     }
 
