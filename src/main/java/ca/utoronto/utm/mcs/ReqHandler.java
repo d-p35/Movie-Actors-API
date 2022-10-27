@@ -54,6 +54,7 @@ public class ReqHandler implements HttpHandler {
 
             if (deserialized.length() == 2 && deserialized.has("name") && deserialized.has("actorID")
                     ) {
+
                 name = deserialized.getString("name");
                 actorId = deserialized.getString("actorID");
 
