@@ -27,6 +27,8 @@ public class ReqHandler implements HttpHandler {
                 case "POST":
                     this.handlePost(exchange);
                     break;
+                case "PUT":
+                    this.handlePut(exchange);
                 default:
                     break;
             }
@@ -41,26 +43,27 @@ public class ReqHandler implements HttpHandler {
     }
 
     public void handlePost(HttpExchange exchange) throws IOException, JSONException {
+
+    }
+    public void handlePut(HttpExchange exchange) throws IOException, JSONException {
         String body = Utils.convert(exchange.getRequestBody());
         try {
             JSONObject deserialized = new JSONObject(body);
 
-            String name, pid, description, type1, type2;
+            String name, actorId;
 
-            if (deserialized.length() == 5 && deserialized.has("name") && deserialized.has("pid") &&
-                    deserialized.has("description") && deserialized.has("type1") && deserialized.has("type2")) {
+            if (deserialized.length() == 2 && deserialized.has("name") && deserialized.has("actorID")
+                    ) {
                 name = deserialized.getString("name");
-                pid = deserialized.getString("pid");
-                description = deserialized.getString("description");
-                type1 = deserialized.getString("type1");
-                type2 = deserialized.getString("type2");
+                actorId = deserialized.getString("actorID");
+
             } else {
                 exchange.sendResponseHeaders(400, -1);
                 return;
             }
 
             try {
-                this.dao.insertPokemon(name, pid, description, type1, type2);
+                this.dao.insertActor(name, actorId);
             } catch (Exception e) {
                 exchange.sendResponseHeaders(500, -1);
                 e.printStackTrace();
@@ -72,5 +75,7 @@ public class ReqHandler implements HttpHandler {
             exchange.sendResponseHeaders(500, -1);
         }
     }
+
+
     }
 

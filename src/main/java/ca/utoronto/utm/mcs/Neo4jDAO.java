@@ -20,11 +20,13 @@ public class Neo4jDAO {
         this.session = this.driver.session();
     }
 
-    public void insertPokemon(String name, String pid, String description, String type1, String type2) {
+
+    public void insertActor(String name, String actorID) {
         String query;
-        query = "CREATE (n:pokemon {name: \"%s\", pid: \"%s\", description: \"%s\", type1: \"%s\", type2: \"%s\"})";
-        query = String.format(query, name, pid, description, type1, type2);
+        query = "CREATE (n:actor {name: \"%s\", actorID: \"%s\"})";
+        query = String.format(query, name, actorID);
         this.session.run(query);
         return;
     }
+
 }
