@@ -78,6 +78,36 @@ public class ReqHandler implements HttpHandler {
                 e.printStackTrace();
                 exchange.sendResponseHeaders(500, -1);
             }
+        } else if (uri.equals(originalURI + "/addMovie")) {
+            try {
+                JSONObject deserialized = new JSONObject(body);
+
+                String name, movieId;
+
+                if (deserialized.has("name") && deserialized.has("movieID")
+                ) {
+                    name = deserialized.getString("name");
+                    movieId = deserialized.getString("movieID");
+
+                } else {
+                    exchange.sendResponseHeaders(400, -1);
+                    return;
+                }
+
+                try {
+                    this.dao.insertMovie(name, movieId);
+                } catch (Exception e) {
+                    exchange.sendResponseHeaders(500, -1);
+                    e.printStackTrace();
+                    return;
+                }
+                exchange.sendResponseHeaders(200, -1);
+            } catch (Exception e) {
+                e.printStackTrace();
+                exchange.sendResponseHeaders(500, -1);
+            }
+
+
         }
     }
 
