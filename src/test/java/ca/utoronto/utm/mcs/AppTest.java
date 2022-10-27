@@ -40,7 +40,7 @@ public class AppTest {
         JSONObject confirmReq = new JSONObject()
                 .put("name", "Denzel Washington")
                 .put("actorID", "nm1001213");
-        HttpResponse<String> confirmRes = sendRequest("/api/v1/", "PUT", confirmReq.toString());
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addActor", "PUT", confirmReq.toString());
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
     }
     @Test
@@ -48,7 +48,7 @@ public class AppTest {
         JSONObject confirmReq = new JSONObject()
                 .put("name", "Denzel Washington");
 
-        HttpResponse<String> confirmRes = sendRequest("/api/v1/", "PUT", confirmReq.toString());
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addActor", "PUT", confirmReq.toString());
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
     }
 }
