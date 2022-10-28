@@ -51,4 +51,39 @@ public class AppTest {
         HttpResponse<String> confirmRes = sendRequest("/api/v1/addActor", "PUT", confirmReq.toString());
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
     }
+
+    @Test
+    public void addMoviePass() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("name", "Parasite")
+                .put("movieID", "nm7001453");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addMovie", "PUT", confirmReq.toString());
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+
+    @Test
+    public void addMovieFail() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("name", "Parasite")
+                .put("actorID", "nm7001453");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addMovie", "PUT", confirmReq.toString());
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
+    }
+    @Test
+    public void addRelationshipPass() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nm1001213")
+                .put("movieID", "nm7001453");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addRelationship", "PUT", confirmReq.toString());
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+    @Test
+    public void addRelationshipFail() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nm1001213")
+                .put("movieID", "nm700322321453");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addRelationship", "PUT", confirmReq.toString());
+        assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
+    }
+
 }

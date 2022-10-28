@@ -51,63 +51,103 @@ public class ReqHandler implements HttpHandler {
         String body = Utils.convert(exchange.getRequestBody());
 
         if(uri.equals(originalURI + "/addActor")) {
-            try {
-                JSONObject deserialized = new JSONObject(body);
-
-                String name, actorId;
-
-                if (deserialized.has("name") && deserialized.has("actorID")
-                ) {
-                    name = deserialized.getString("name");
-                    actorId = deserialized.getString("actorID");
-
-                } else {
-                    exchange.sendResponseHeaders(400, -1);
-                    return;
-                }
-
-                try {
-                    this.dao.insertActor(name, actorId);
-                } catch (Exception e) {
-                    exchange.sendResponseHeaders(500, -1);
-                    e.printStackTrace();
-                    return;
-                }
-                exchange.sendResponseHeaders(200, -1);
-            } catch (Exception e) {
-                e.printStackTrace();
-                exchange.sendResponseHeaders(500, -1);
-            }
+            addActor(exchange,body);
         } else if (uri.equals(originalURI + "/addMovie")) {
-            try {
-                JSONObject deserialized = new JSONObject(body);
+            addMovie(exchange,body);
+        }
+        else if (uri.equals(originalURI+"/addRelationship")){
+            addRelationshiip(exchange,body);
+        }
+    }
+    public void addActor (HttpExchange exchange,String body) throws IOException {
+        try {
+            JSONObject deserialized = new JSONObject(body);
 
-                String name, movieId;
+            String name, actorId;
 
-                if (deserialized.has("name") && deserialized.has("movieID")
-                ) {
-                    name = deserialized.getString("name");
-                    movieId = deserialized.getString("movieID");
+            if (deserialized.has("name") && deserialized.has("actorID")
+            ) {
+                name = deserialized.getString("name");
+                actorId = deserialized.getString("actorID");
 
-                } else {
-                    exchange.sendResponseHeaders(400, -1);
-                    return;
-                }
-
-                try {
-                    this.dao.insertMovie(name, movieId);
-                } catch (Exception e) {
-                    exchange.sendResponseHeaders(500, -1);
-                    e.printStackTrace();
-                    return;
-                }
-                exchange.sendResponseHeaders(200, -1);
-            } catch (Exception e) {
-                e.printStackTrace();
-                exchange.sendResponseHeaders(500, -1);
+            } else {
+                exchange.sendResponseHeaders(400, -1);
+                return;
             }
 
+            try {
+                this.dao.insertActor(name, actorId);
+            } catch (Exception e) {
+                exchange.sendResponseHeaders(500, -1);
+                e.printStackTrace();
+                return;
+            }
+            exchange.sendResponseHeaders(200, -1);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            exchange.sendResponseHeaders(500, -1);
+        }
+    }
 
+    public void addMovie(HttpExchange exchange, String body) throws IOException {
+        try {
+            JSONObject deserialized = new JSONObject(body);
+
+            String name, movieId;
+
+            if (deserialized.has("name") && deserialized.has("movieID")
+            ) {
+                name = deserialized.getString("name");
+                movieId = deserialized.getString("movieID");
+
+            } else {
+                exchange.sendResponseHeaders(400, -1);
+                return;
+            }
+
+            try {
+                this.dao.insertMovie(name, movieId);
+            } catch (Exception e) {
+                exchange.sendResponseHeaders(500, -1);
+                e.printStackTrace();
+                return;
+            }
+            exchange.sendResponseHeaders(200, -1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            exchange.sendResponseHeaders(500, -1);
+        }
+
+    }
+
+    public void addRelationshiip(HttpExchange exchange, String body) throws IOException {
+        try {
+            JSONObject deserialized = new JSONObject(body);
+
+            String actorID, movieId;
+
+            if (deserialized.has("actorID") && deserialized.has("movieID")
+            ) {
+                actorID = deserialized.getString("actorID");
+                movieId = deserialized.getString("movieID");
+
+            } else {
+                exchange.sendResponseHeaders(400, -1);
+                return;
+            }
+
+            try {
+                this.dao.insertRelationship(actorID, movieId);
+            } catch (Exception e) {
+                exchange.sendResponseHeaders(500, -1);
+                e.printStackTrace();
+                return;
+            }
+            exchange.sendResponseHeaders(200, -1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            exchange.sendResponseHeaders(500, -1);
         }
     }
 
