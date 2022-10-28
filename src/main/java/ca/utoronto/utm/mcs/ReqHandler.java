@@ -53,6 +53,13 @@ public class ReqHandler implements HttpHandler {
         if(uri.equals(originalURI + "/getActor")){
             this.getActor(exchange, body);
         }
+        else if(uri.equals(originalURI + "/getMovie")){
+            this.getMovie(exchange, body);
+        }
+        else if(uri.equals(originalURI + "/hasRelationship")){
+            this.hasRelationship(exchange, body);
+        }
+        
 
     }
 
