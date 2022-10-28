@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - main
       - master
   pull_request:
 
@@ -23,6 +24,13 @@ jobs:
           java-version: 16
       - name: Clean db before tests
         run: delete_all_nodes
+      - name: Sleep for 30 seconds to ensure neo4j is synced
+        run: sleep 30s
+        shell: bash
+      - name: maven clean
+        run: mvn verify clean --fail-never
+      - name: build work
+        run: mvn compile
       - name: Run mvn test
         run: mvn test
       - name: Clean db after tests
