@@ -45,7 +45,7 @@ public class ReqHandler implements HttpHandler {
     public void handlePost(HttpExchange exchange) throws IOException, JSONException {
 
     }
-    public void handlePut(HttpExchange exchange) throws IOException, JSONException {
+    public void handlePut(HttpExchange exchange) throws IOException, JSONException, UserException {
         String originalURI = "/api/v1";
         String uri = exchange.getRequestURI().toString();
         String body = Utils.convert(exchange.getRequestBody());
