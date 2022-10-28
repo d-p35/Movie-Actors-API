@@ -45,7 +45,7 @@ public class ReqHandler implements HttpHandler {
     public void handlePost(HttpExchange exchange) throws IOException, JSONException {
 
     }
-    public void handlePut(HttpExchange exchange) throws IOException, JSONException {
+    public void handlePut(HttpExchange exchange) throws IOException, JSONException, UserException {
         String originalURI = "/api/v1";
         String uri = exchange.getRequestURI().toString();
         String body = Utils.convert(exchange.getRequestBody());
@@ -68,7 +68,12 @@ public class ReqHandler implements HttpHandler {
 
                 try {
                     this.dao.insertActor(name, actorId);
-                } catch (Exception e) {
+                }
+                catch (UserException u){
+                    exchange.sendResponseHeaders(400, -1);
+                    return;
+                }
+                catch (Exception e) {
                     exchange.sendResponseHeaders(500, -1);
                     e.printStackTrace();
                     return;
@@ -96,7 +101,12 @@ public class ReqHandler implements HttpHandler {
 
                 try {
                     this.dao.insertMovie(name, movieId);
-                } catch (Exception e) {
+                }
+                catch (UserException u){
+                    exchange.sendResponseHeaders(400, -1);
+                    return;
+                }
+                catch (Exception e) {
                     exchange.sendResponseHeaders(500, -1);
                     e.printStackTrace();
                     return;
