@@ -155,4 +155,42 @@ public class Neo4jDAO {
     }
 
 
+    public JSONObject getRelationship(String actorID,String movieID) throws UserException, JSONException{
+        String query;
+        Transaction tx = session.beginTransaction();
+        Result node_bool = tx.run("MATCH (n:movie {movieID: $x }) RETURN n as bool", parameters("x", movieID));
+        Result node_bool2 = tx.run("MATCH (n:actor {actorID: $x }) RETURN n as bool", parameters("x", actorID));
+        if((!node_bool.hasNext()) || (!node_bool2.hasNext())) {
+            tx.close();
+            throw new UserException("MovieID or actorID does not exists");
+        }
+
+        Result result = tx.run("MATCH (a:actor {actorID: $x })-[r:ACTED_IN]-(b:movie {movieID: $y}) RETURN collect(b.movieID) as movieIDs", parameters("x", actorID, "y",movieID ));
+        List<Record> recs = result.list();
+        List <Object> movieIds = recs.get(0).get(0).asList();
+        System.out.println(movieIds.size());
+        if (movieIds.size()==1){
+            tx.close();
+            JSONObject response = new JSONObject();
+
+            response.put("actorID", actorID);
+            response.put("movieID", movieID);
+            response.put("hasRelationship", "true");
+            return response;
+        }
+        else {
+            tx.close();
+
+            JSONObject response = new JSONObject();
+
+            response.put("actorID", actorID);
+            response.put("movieID", movieID);
+            response.put("hasRelationship", "false");
+            return response;
+        }
+
+
+
+
+    }
 }

@@ -53,10 +53,6 @@ public class ReqHandler implements HttpHandler {
         if(uri.equals(originalURI + "/getActor")){
             this.getActor(exchange, body);
         }
-        if(uri.equals(originalURI + "/getMovie")){
-            this.getMovie(exchange, body);
-        }
-
 
     }
 
@@ -206,7 +202,7 @@ public class ReqHandler implements HttpHandler {
             }
 
             try {
-               JSONObject r = this.dao.getActor(actorID);
+               JSONObject r = this.dao.getMovie(actorID);
                String response = r.toString();
                 exchange.sendResponseHeaders(200, response.length());
                 OutputStream os = exchange.getResponseBody();
@@ -256,6 +252,49 @@ public class ReqHandler implements HttpHandler {
             }
             catch (UserException u){
                 exchange.sendResponseHeaders(404, -1);
+                return;
+            }
+            catch (Exception e) {
+                exchange.sendResponseHeaders(500, -1);
+                e.printStackTrace();
+                return;
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            exchange.sendResponseHeaders(500, -1);
+        }
+    }
+
+    public void hasRelationship(HttpExchange exchange, String body) throws IOException{
+        try {
+            JSONObject deserialized = new JSONObject(body);
+
+            String actorID, movieId;
+
+            if (deserialized.has("actorID") && deserialized.has("movieID")
+            ) {
+                actorID = deserialized.getString("actorID");
+                movieId = deserialized.getString("movieID");
+
+            } else {
+                exchange.sendResponseHeaders(400, -1);
+                return;
+            }
+
+            try {
+              JSONObject r =  this.dao.getRelationship(actorID, movieId);
+              String response = r.toString();
+              exchange.sendResponseHeaders(200, response.length());
+              OutputStream os = exchange.getResponseBody();
+              os.write(response.getBytes());
+              os.close();
+            }
+            catch (UserException u) {
+                if (u.message.equals("MovieID or actorID does not exists")){
+                    exchange.sendResponseHeaders(404, -1);
+                }
                 return;
             }
             catch (Exception e) {
