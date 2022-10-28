@@ -70,7 +70,7 @@ public class ReqHandler implements HttpHandler {
             addMovie(exchange,body);
         }
         else if (uri.equals(originalURI+"/addRelationship")){
-            addRelationshiip(exchange,body);
+            addRelationship(exchange,body);
         }
     }
     public void addActor (HttpExchange exchange,String body) throws IOException {
@@ -144,7 +144,7 @@ public class ReqHandler implements HttpHandler {
 
     }
 
-    public void addRelationshiip(HttpExchange exchange, String body) throws IOException {
+    public void addRelationship(HttpExchange exchange, String body) throws IOException {
         try {
             JSONObject deserialized = new JSONObject(body);
 
@@ -162,7 +162,17 @@ public class ReqHandler implements HttpHandler {
 
             try {
                 this.dao.insertRelationship(actorID, movieId);
-            } catch (Exception e) {
+            }
+            catch (UserException u) {
+                if (u.message.equals("MovieID or actorID does not exists")){
+                    exchange.sendResponseHeaders(404, -1);
+                }
+                else if (u.message.equals("Relationship already exists")) {
+                    exchange.sendResponseHeaders(400, -1);
+                }
+                return;
+            }
+            catch (Exception e) {
                 exchange.sendResponseHeaders(500, -1);
                 e.printStackTrace();
                 return;
