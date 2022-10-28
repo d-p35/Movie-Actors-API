@@ -77,14 +77,18 @@ public class ReqHandler implements HttpHandler {
 
             try {
                 this.dao.insertActor(name, actorId);
-            } catch (Exception e) {
+            }
+            catch (UserException u){
+                exchange.sendResponseHeaders(400, -1);
+                return;
+            }
+            catch (Exception e) {
                 exchange.sendResponseHeaders(500, -1);
                 e.printStackTrace();
                 return;
             }
             exchange.sendResponseHeaders(200, -1);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             exchange.sendResponseHeaders(500, -1);
         }
@@ -108,7 +112,12 @@ public class ReqHandler implements HttpHandler {
 
             try {
                 this.dao.insertMovie(name, movieId);
-            } catch (Exception e) {
+            }
+            catch (UserException u){
+                exchange.sendResponseHeaders(400, -1);
+                return;
+            }
+            catch (Exception e) {
                 exchange.sendResponseHeaders(500, -1);
                 e.printStackTrace();
                 return;
