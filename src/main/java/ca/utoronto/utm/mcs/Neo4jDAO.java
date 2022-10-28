@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.neo4j.driver.*;
 import org.neo4j.driver.Record;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -190,7 +191,52 @@ public class Neo4jDAO {
         }
 
 
+    }
 
+
+    public JSONObject getBaconPath(String actorID) throws UserException, JSONException {
+        if(actorID.equals("nm1001213")){
+            JSONObject response = new JSONObject();
+            List<String> baconID = new ArrayList<>();
+            baconID.add(actorID);
+
+            response.put("baconPath", actorID);
+
+            return response;
+        }
+        Transaction tx = session.beginTransaction();
+        Result node_bool = tx.run("MATCH (p1:actor { actorID: $x }), (p2:actor { actorID: $y }), p = shortestPath((p1)-[:ACTED_IN*]-(p2)) RETURN (nodes(p))", parameters("x", actorID, "y", "nm1001213"));
+        List<org.neo4j.driver.Record> re = node_bool.list();
+        if(re.isEmpty()){
+            tx.close();
+            throw new UserException("MovieID or actorID does not exists, or no path exists between actors");
+        }
+            System.out.println(re.get(0).get(0));
+        List<String> baconPath = new ArrayList<>();
+        for(int i=0; i<re.get(0).get(0).size(); i++){
+            if(i%2==0) {
+                baconPath.add(re.get(0).get(0).get(i).get("actorID").asString());
+            }
+            else {
+                baconPath.add(re.get(0).get(0).get(i).get("movieID").asString());
+            }
+        }
+
+        for (String s:
+             baconPath) {
+            System.out.println(s);
+        }
+//
+//        String name = re.get(0).get("name").asString();
+//        System.out.println(name);
+//
+//
+        JSONObject response = new JSONObject();
+
+        response.put("baconPath", baconPath);
+
+        tx.close();
+        return response;
 
     }
 }
