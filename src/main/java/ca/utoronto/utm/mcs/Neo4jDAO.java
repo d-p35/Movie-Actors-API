@@ -169,6 +169,7 @@ public class Neo4jDAO {
         List<Record> recs = result.list();
         List <Object> movieIds = recs.get(0).get(0).asList();
         System.out.println(movieIds.size());
+
         if (movieIds.size()==1){
             tx.close();
             JSONObject response = new JSONObject();
@@ -190,7 +191,40 @@ public class Neo4jDAO {
         }
 
 
+    }
+
+    public JSONObject computeBaconNumber(String actorID ) throws JSONException, UserException {
+
+        if (actorID == "nm0000102"){
+            JSONObject response = new JSONObject();
+
+            response.put("baconNumber", 0);
+
+            return response;
+        }
+
+
+        String query;
+        Transaction tx = session.beginTransaction();
+        Result node_bool2 = tx.run("MATCH (n:actor {actorID: $x }) RETURN n as bool", parameters("x", actorID));
+
+        if((!node_bool2.hasNext())) {
+            tx.close();
+            throw new UserException("actorID does not exists");
+        }
+        Result re = tx.run(  "MATCH (a:actor { actorID:\"nm0000102\" }),(b:actor { actorID: $x }), p = shortestPath((a)-[*]-(b)) RETURN relationships(p) ", parameters("x", actorID ));
+        List<org.neo4j.driver.Record> recs1 = re.list();
+        List <Object> relationship = recs1.get(0).get(0).asList();
+            int baconNumber = relationship.size()/2;
+        JSONObject response = new JSONObject();
+
+        response.put("baconNumber", baconNumber);
+        tx.close();
+        return response;
+
 
 
     }
+
+
 }
