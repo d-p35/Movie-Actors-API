@@ -1,6 +1,12 @@
 package ca.utoronto.utm.mcs;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.neo4j.driver.*;
+import org.neo4j.driver.Record;
+
+import java.util.List;
+import java.util.Objects;
 
 import static org.neo4j.driver.Values.parameters;
 
@@ -22,11 +28,6 @@ public class Neo4jDAO {
 
     public void insertActor(String name, String actorID) throws UserException {
         String query;
-//        query = "MERGE (n:actor {actorID: \"%s\"})\n" +
-//                "ON CREATE\n" +
-//                "SET n.name = \"%s\"\n" +
-//                "ON MATCH\n" +
-//                "SET n.name = \"%s\"\n";
         Transaction tx = session.beginTransaction();
 
         Result node_bool = tx.run("MATCH (n:actor {actorID: $x }) RETURN n as bool", parameters("x", actorID));
@@ -68,4 +69,31 @@ public class Neo4jDAO {
         return;
     }
 
+        public JSONObject getMovie(String actorID) throws UserException, JSONException {
+        String query;
+        Transaction tx = session.beginTransaction();
+        Result node_bool = tx.run("MATCH (n:actor {actorID: $x }) RETURN n as bool", parameters("x", actorID));
+        if(!node_bool.hasNext()) {
+            tx.close();
+            throw new UserException("Actor ID doesn't exist");
+        }
+        Result result = tx.run("MATCH (a:actor {actorID: $x })-[r:ACTED_IN]-(b:movie) RETURN collect(b.movieID) as movieIDs, a.name as name", parameters("x", actorID));
+        List<org.neo4j.driver.Record> recs = result.list();
+//        System.out.println(recs.get(0).get("movieIDs"));
+//        System.out.println(recs.get(0).get("name"));
+
+        String name = recs.get(0).get("name").asString();
+        List <Object> movieIds = recs.get(0).get("movieIDs").asList();
+
+        JSONObject response = new JSONObject();
+
+        response.put("actorID", actorID);
+        response.put("name", name);
+        response.put("movies", movieIds);
+
+//        System.out.println(response);
+        tx.close();
+
+        return response;
+    }
 }

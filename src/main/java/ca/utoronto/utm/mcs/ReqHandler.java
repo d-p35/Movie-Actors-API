@@ -1,6 +1,12 @@
 package ca.utoronto.utm.mcs;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.JSONException;
@@ -39,6 +45,14 @@ public class ReqHandler implements HttpHandler {
     }
 
     public void handleGet(HttpExchange exchange) throws IOException, JSONException {
+        String originalURI = "/api/v1";
+        String uri = exchange.getRequestURI().toString();
+        String body = Utils.convert(exchange.getRequestBody());
+
+
+        if(uri.equals(originalURI + "/getActor")){
+            this.getActor(exchange, body);
+        }
 
     }
 
@@ -153,7 +167,49 @@ public class ReqHandler implements HttpHandler {
                 e.printStackTrace();
                 return;
             }
+
             exchange.sendResponseHeaders(200, -1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            exchange.sendResponseHeaders(500, -1);
+        }
+    }
+
+        public void getActor(HttpExchange exchange, String body) throws IOException{
+        try {
+            JSONObject deserialized = new JSONObject(body);
+
+
+            String actorID;
+
+            if (deserialized.has("actorID")) {
+
+                actorID = deserialized.getString("actorID");
+
+            } else {
+                exchange.sendResponseHeaders(400, -1);
+                return;
+            }
+
+            try {
+               JSONObject r = this.dao.getMovie(actorID);
+               String response = r.toString();
+                exchange.sendResponseHeaders(200, response.length());
+                OutputStream os = exchange.getResponseBody();
+                os.write(response.getBytes());
+                os.close();
+            }
+            catch (UserException u){
+                exchange.sendResponseHeaders(404, -1);
+                return;
+            }
+            catch (Exception e) {
+                exchange.sendResponseHeaders(500, -1);
+                e.printStackTrace();
+                return;
+            }
+
+
         } catch (Exception e) {
             e.printStackTrace();
             exchange.sendResponseHeaders(500, -1);
