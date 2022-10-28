@@ -182,6 +182,16 @@ public class AppTest {
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
     }
     @Test
+    @Order(12)
+    public void hasRelationshipFail() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nmrandomID")
+                .put("movieID", "nm7001453");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/hasRelationship", "GET", confirmReq.toString());
+
+        assertEquals(HttpURLConnection.HTTP_NOT_FOUND, confirmRes.statusCode());
+    }
+    @Test
     @Order(13)
     public void computeBaconNumberPass() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
@@ -211,6 +221,32 @@ public class AppTest {
 
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
         assertEquals("{\"baconNumber\":0}",confirmRes.body());
+    }
+    @Test
+    @Order(15)
+    public void computeBaconPathPass() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nm0000102");
+
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/computeBaconPath", "GET", confirmReq.toString());
+
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+        JSONObject a = new JSONObject("{\"baconPath\": [\"nm0000102\"]}");
+
+        assertEquals(a.toString(), new JSONObject(confirmRes.body()).toString());
+    }
+    @Test
+    @Order(15)
+    public void computeBaconPathFail() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nmRandomID");
+
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/computeBaconPath", "GET", confirmReq.toString());
+
+        assertEquals(HttpURLConnection.HTTP_NOT_FOUND, confirmRes.statusCode());
+
+        
+
     }
 
 

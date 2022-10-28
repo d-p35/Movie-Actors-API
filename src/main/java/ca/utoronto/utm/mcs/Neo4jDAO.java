@@ -226,17 +226,17 @@ public class Neo4jDAO {
 
 
     public JSONObject getBaconPath(String actorID) throws UserException, JSONException {
-        if(actorID.equals("nm1001213")){
+        if(actorID.equals("nm0000102")){
             JSONObject response = new JSONObject();
             List<String> baconID = new ArrayList<>();
             baconID.add(actorID);
 
-            response.put("baconPath", actorID);
+            response.put("baconPath", baconID);
 
             return response;
         }
         Transaction tx = session.beginTransaction();
-        Result node_bool = tx.run("MATCH (p1:actor { actorID: $x }), (p2:actor { actorID: $y }), p = shortestPath((p1)-[:ACTED_IN*]-(p2)) RETURN (nodes(p))", parameters("x", actorID, "y", "nm1001213"));
+        Result node_bool = tx.run("MATCH (p1:actor { actorID: $x }), (p2:actor { actorID: $y }), p = shortestPath((p1)-[:ACTED_IN*]-(p2)) RETURN (nodes(p))", parameters("x", actorID, "y", "nm0000102"));
         List<org.neo4j.driver.Record> re = node_bool.list();
         if(re.isEmpty()){
             tx.close();
