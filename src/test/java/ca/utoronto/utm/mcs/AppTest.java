@@ -37,7 +37,6 @@ public class AppTest {
     }
 
 
-
     @Test
     @Order(1)
     public void addActorPass() throws JSONException, IOException, InterruptedException{
@@ -58,7 +57,7 @@ public class AppTest {
     }
     
     @Test
-    @Order(3)
+    @Order(2)
     public void addActorFail() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
                 .put("name", "Denzel Washington");
@@ -68,7 +67,7 @@ public class AppTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void addMoviePass() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
                 .put("name", "Parasite")
@@ -78,7 +77,7 @@ public class AppTest {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public void addMovieFail() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
                 .put("name", "Parasite")
@@ -87,7 +86,7 @@ public class AppTest {
         assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, confirmRes.statusCode());
     }
     @Test
-    @Order(6)
+    @Order(5)
     public void addRelationshipPass() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
                 .put("actorId", "nm0000102")
