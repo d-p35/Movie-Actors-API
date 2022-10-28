@@ -87,31 +87,72 @@ public class Neo4jDAO {
         return;
     }
 
-        public JSONObject getMovie(String actorID) throws UserException, JSONException {
-        String query;
+        public JSONObject getActor(String actorID) throws UserException, JSONException {
         Transaction tx = session.beginTransaction();
-        Result node_bool = tx.run("MATCH (n:actor {actorID: $x }) RETURN n as bool", parameters("x", actorID));
-        if(!node_bool.hasNext()) {
+        Result node_bool = tx.run("MATCH (n:actor {actorID: $x }) RETURN n.name as name", parameters("x", actorID));
+            List<org.neo4j.driver.Record> re = node_bool.list();
+//            System.out.println(re);
+            if(re.isEmpty()){
             tx.close();
             throw new UserException("Actor ID doesn't exist");
         }
-        Result result = tx.run("MATCH (a:actor {actorID: $x })-[r:ACTED_IN]-(b:movie) RETURN collect(b.movieID) as movieIDs, a.name as name", parameters("x", actorID));
-        List<org.neo4j.driver.Record> recs = result.list();
-//        System.out.println(recs.get(0).get("movieIDs"));
-//        System.out.println(recs.get(0).get("name"));
+            String name = re.get(0).get("name").asString();
+            System.out.println(name);
 
-        String name = recs.get(0).get("name").asString();
-        List <Object> movieIds = recs.get(0).get("movieIDs").asList();
+        Result result = tx.run("MATCH (a:actor {actorID: $x })-[r:ACTED_IN]-(b:movie) RETURN collect(b.movieID) as movieIDs", parameters("x", actorID));
+        List<org.neo4j.driver.Record> recs = result.list();
+        System.out.println(recs.get(0).get("movieIDs"));
+        List<Object> movieIds = recs.get(0).get("movieIDs").asList();
+//        System.out.println(recs.get(0).get("name"));
+//        String name = recs.get(0).get("name").asString();
+//        List<Object> movieIds;
+//        movieIds.clear();
+//        if(!recs.isEmpty()) {
+//            movieIds = recs.get(0).get("movieIDs").asList();
+//        }
+
 
         JSONObject response = new JSONObject();
 
         response.put("actorID", actorID);
         response.put("name", name);
         response.put("movies", movieIds);
-
-//        System.out.println(response);
+//
+////        System.out.println(response);
         tx.close();
-
+//
         return response;
+//            return new JSONObject();
     }
+
+    public JSONObject getMovie(String movieID) throws UserException, JSONException {
+        Transaction tx = session.beginTransaction();
+        Result node_bool = tx.run("MATCH (n:movie {movieID: $x }) RETURN n.name as name", parameters("x", movieID));
+        List<org.neo4j.driver.Record> re = node_bool.list();
+//            System.out.println(re);
+        if(re.isEmpty()){
+            tx.close();
+            throw new UserException("Movie ID doesn't exist");
+        }
+
+        String name = re.get(0).get("name").asString();
+        System.out.println(name);
+
+        Result result = tx.run("MATCH (a:actor )-[r:ACTED_IN]-(b:movie {movieID: $x } ) RETURN collect(a.actorID) as actorIDs", parameters("x", movieID));
+        List<org.neo4j.driver.Record> recs = result.list();
+        System.out.println(recs.get(0).get("actorIDs"));
+        List<Object> actorIDs = recs.get(0).get("actorIDs").asList();
+
+        JSONObject response = new JSONObject();
+
+        response.put("movieID", movieID);
+        response.put("name", name);
+        response.put("actors", actorIDs);
+
+        tx.close();
+        return response;
+
+    }
+
+
 }
