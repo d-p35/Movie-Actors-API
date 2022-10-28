@@ -85,5 +85,15 @@ public class AppTest {
         HttpResponse<String> confirmRes = sendRequest("/api/v1/addRelationship", "PUT", confirmReq.toString());
         assertEquals(HttpURLConnection.HTTP_NOT_FOUND, confirmRes.statusCode());
     }
+    @Test
+    public void hasRelationshipPass() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nm1001213")
+                .put("movieID", "nm7001453");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/hasRelationship", "GET", confirmReq.toString());
+
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+
 
 }
