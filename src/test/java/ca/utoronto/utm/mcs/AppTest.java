@@ -16,6 +16,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO Please Write Your Tests For CI/CD In This Class. You will see
 // these tests pass/fail on github under github actions.
@@ -33,19 +35,24 @@ public class AppTest {
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+
+
     @Test
     @Order(1)
-    public void exampleTest() {
-        assertTrue(true);
-    }
-
-
-    @Test
-    @Order(2)
     public void addActorPass() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
                 .put("name", "Denzel Washington")
                 .put("actorID", "nm1001213");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addActor", "PUT", confirmReq.toString());
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+    @Test
+    @Order(2)
+    public void addActorPass2() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("name", "Kevin Bacon")
+                .put("actorID", "nm0000102");
         HttpResponse<String> confirmRes = sendRequest("/api/v1/addActor", "PUT", confirmReq.toString());
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
     }
@@ -83,6 +90,15 @@ public class AppTest {
     @Order(6)
     public void addRelationshipPass() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nm0000102")
+                .put("movieID", "nm7001453");
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/addRelationship", "PUT", confirmReq.toString());
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+    }
+    @Test
+    @Order(6)
+    public void addRelationshipPass2() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
                 .put("actorID", "nm1001213")
                 .put("movieID", "nm7001453");
         HttpResponse<String> confirmRes = sendRequest("/api/v1/addRelationship", "PUT", confirmReq.toString());
@@ -105,8 +121,14 @@ public class AppTest {
                 .put("actorID", "nm1001213");
 
         HttpResponse<String> confirmRes = sendRequest("/api/v1/getActor", "GET", confirmReq.toString());
-
+        JSONObject response = new JSONObject();
+        List<String> a = new ArrayList<>();
+        a.add("nm7001453");
+        response.put("actorID", "nm1001213");
+        response.put("name", "Denzel Washington");
+        response.put("movies", a);
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+        assertEquals(response.toString(),new JSONObject(confirmRes.body()).toString());
     }
     @Test
     @Order(9)
@@ -125,8 +147,19 @@ public class AppTest {
                 .put("movieID", "nm7001453");
 
         HttpResponse<String> confirmRes = sendRequest("/api/v1/getMovie", "GET", confirmReq.toString());
+        JSONObject response = new JSONObject();
+        List<Object> a = new ArrayList<>();
+        a.add("nm0000102");
+        a.add("nm1001213");
 
+
+        response.put("movieID", "nm7001453");
+        response.put("name", "Parasite");
+        response.put("actors", a);
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+        assertEquals(response.toString(),new JSONObject(confirmRes.body()).toString());
+
+
     }
     @Test
     @Order(11)
@@ -150,7 +183,7 @@ public class AppTest {
     }
     @Test
     @Order(13)
-    public void computeBaconNumber() throws JSONException, IOException, InterruptedException{
+    public void computeBaconNumberPass() throws JSONException, IOException, InterruptedException{
         JSONObject confirmReq = new JSONObject()
                 .put("actorID", "nm1001213");
 
@@ -158,6 +191,29 @@ public class AppTest {
 
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
     }
+    @Test
+    @Order(14)
+    public void computeBaconNumberFail() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nm30000");
+
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/computeBaconNumber", "GET", confirmReq.toString());
+
+        assertEquals(HttpURLConnection.HTTP_NOT_FOUND, confirmRes.statusCode());
+    }
+    @Test
+    @Order(15)
+    public void computeBaconNumberPass2() throws JSONException, IOException, InterruptedException{
+        JSONObject confirmReq = new JSONObject()
+                .put("actorID", "nm0000102");
+
+        HttpResponse<String> confirmRes = sendRequest("/api/v1/computeBaconNumber", "GET", confirmReq.toString());
+
+        assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
+        assertEquals("{\"baconNumber\":0}",confirmRes.body());
+    }
+
+
 
 
 }

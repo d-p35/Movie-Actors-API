@@ -196,7 +196,7 @@ public class Neo4jDAO {
 
     public JSONObject computeBaconNumber(String actorID ) throws JSONException, UserException {
 
-        if (actorID == "nm0000102"){
+        if (actorID.equals("nm0000102")){
             JSONObject response = new JSONObject();
 
             response.put("baconNumber", 0);
