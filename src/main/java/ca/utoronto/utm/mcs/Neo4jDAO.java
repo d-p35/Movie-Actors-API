@@ -74,7 +74,7 @@ public class Neo4jDAO {
         Result result = tx.run("MATCH (a:actor {id: $x })-[r:ACTED_IN]-(b:movie {id: $y}) RETURN collect(b.id) as movieIDs", parameters("x", actorID, "y",movieID ));
         List<Record> recs = result.list();
         List <Object> movieIds = recs.get(0).get(0).asList();
-        System.out.println(movieIds.size());
+
         if (movieIds.size()==1){
             tx.close();
             throw new UserException("Relationship already exists");
@@ -91,61 +91,51 @@ public class Neo4jDAO {
         Transaction tx = session.beginTransaction();
         Result node_bool = tx.run("MATCH (n:actor {id: $x }) RETURN n.name as name", parameters("x", actorID));
             List<org.neo4j.driver.Record> re = node_bool.list();
-//            System.out.println(re);
             if(re.isEmpty()){
             tx.close();
             throw new UserException("Actor ID doesn't exist");
         }
             String name = re.get(0).get("name").asString();
-            System.out.println(name);
+
 
         Result result = tx.run("MATCH (a:actor {id: $x })-[r:ACTED_IN]-(b:movie) RETURN collect(b.id) as movieIDs", parameters("x", actorID));
         List<org.neo4j.driver.Record> recs = result.list();
-        System.out.println(recs.get(0).get("movieIDs"));
+
         List<Object> movieIds = recs.get(0).get("movieIDs").asList();
-//        System.out.println(recs.get(0).get("name"));
-//        String name = recs.get(0).get("name").asString();
-//        List<Object> movieIds;
-//        movieIds.clear();
-//        if(!recs.isEmpty()) {
-//            movieIds = recs.get(0).get("movieIDs").asList();
-//        }
 
 
         JSONObject response = new JSONObject();
 
-        response.put("actorID", actorID);
+        response.put("actorId", actorID);
         response.put("name", name);
         response.put("movies", movieIds);
-//
-////        System.out.println(response);
+
         tx.close();
-//
+
         return response;
-//            return new JSONObject();
     }
 
     public JSONObject getMovie(String movieID) throws UserException, JSONException {
         Transaction tx = session.beginTransaction();
         Result node_bool = tx.run("MATCH (n:movie {id: $x }) RETURN n.name as name", parameters("x", movieID));
         List<org.neo4j.driver.Record> re = node_bool.list();
-//            System.out.println(re);
+
         if(re.isEmpty()){
             tx.close();
             throw new UserException("Movie ID doesn't exist");
         }
 
         String name = re.get(0).get("name").asString();
-        System.out.println(name);
+
 
         Result result = tx.run("MATCH (a:actor )-[r:ACTED_IN]-(b:movie {id: $x } ) RETURN collect(a.id) as actorIDs", parameters("x", movieID));
         List<org.neo4j.driver.Record> recs = result.list();
-        System.out.println(recs.get(0).get("actorIDs"));
+
         List<Object> actorIDs = recs.get(0).get("actorIDs").asList();
 
         JSONObject response = new JSONObject();
 
-        response.put("movieID", movieID);
+        response.put("movieId", movieID);
         response.put("name", name);
         response.put("actors", actorIDs);
 
@@ -168,14 +158,14 @@ public class Neo4jDAO {
         Result result = tx.run("MATCH (a:actor {id: $x })-[r:ACTED_IN]-(b:movie {id: $y}) RETURN collect(b.id) as movieIDs", parameters("x", actorID, "y",movieID ));
         List<Record> recs = result.list();
         List <Object> movieIds = recs.get(0).get(0).asList();
-        System.out.println(movieIds.size());
+
 
         if (movieIds.size()==1){
             tx.close();
             JSONObject response = new JSONObject();
 
-            response.put("actorID", actorID);
-            response.put("movieID", movieID);
+            response.put("actorId", actorID);
+            response.put("movieId", movieID);
             response.put("hasRelationship", "true");
             return response;
         }
@@ -184,8 +174,8 @@ public class Neo4jDAO {
 
             JSONObject response = new JSONObject();
 
-            response.put("actorID", actorID);
-            response.put("movieID", movieID);
+            response.put("actorId", actorID);
+            response.put("movieId", movieID);
             response.put("hasRelationship", "false");
             return response;
         }
@@ -241,22 +231,14 @@ public class Neo4jDAO {
             tx.close();
             throw new UserException("MovieID or actorID does not exists, or no path exists between actors");
         }
-            System.out.println(re.get(0).get(0));
+
 
         List<String> baconPath = new ArrayList<>();
         for(int i=0; i<re.get(0).get(0).size(); i++){
             baconPath.add(re.get(0).get(0).get(i).get("id").asString());
         }
 
-        for (String s:
-             baconPath) {
-            System.out.println(s);
-        }
-//
-//        String name = re.get(0).get("name").asString();
-//        System.out.println(name);
-//
-//
+
         JSONObject response = new JSONObject();
 
         response.put("baconPath", baconPath);
