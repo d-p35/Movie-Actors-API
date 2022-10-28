@@ -195,7 +195,7 @@ public class Neo4jDAO {
 
     public JSONObject computeBaconNumber(String actorID ) throws JSONException, UserException {
 
-        if (actorID == "nm0000102"){
+        if (actorID.equals("nm0000102")){
             JSONObject response = new JSONObject();
 
             response.put("baconNumber", 0);
@@ -225,12 +225,12 @@ public class Neo4jDAO {
 
 
     public JSONObject getBaconPath(String actorID) throws UserException, JSONException {
-        if(actorID.equals("nm1001213")){
+        if(actorID.equals("nm0000102")){
             JSONObject response = new JSONObject();
             List<String> baconID = new ArrayList<>();
             baconID.add(actorID);
 
-            response.put("baconPath", actorID);
+            response.put("baconPath", baconID);
 
             return response;
         }
