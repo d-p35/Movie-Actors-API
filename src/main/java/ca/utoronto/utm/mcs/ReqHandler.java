@@ -92,10 +92,10 @@ public class ReqHandler implements HttpHandler {
 
             String name, actorId;
 
-            if (deserialized.has("name") && deserialized.has("actorID")
+            if (deserialized.has("name") && deserialized.has("actorId")
             ) {
                 name = deserialized.getString("name");
-                actorId = deserialized.getString("actorID");
+                actorId = deserialized.getString("actorId");
 
             } else {
                 exchange.sendResponseHeaders(400, -1);
@@ -127,10 +127,10 @@ public class ReqHandler implements HttpHandler {
 
             String name, movieId;
 
-            if (deserialized.has("name") && deserialized.has("movieID")
+            if (deserialized.has("name") && deserialized.has("movieId")
             ) {
                 name = deserialized.getString("name");
-                movieId = deserialized.getString("movieID");
+                movieId = deserialized.getString("movieId");
 
             } else {
                 exchange.sendResponseHeaders(400, -1);
@@ -163,10 +163,10 @@ public class ReqHandler implements HttpHandler {
 
             String actorID, movieId;
 
-            if (deserialized.has("actorID") && deserialized.has("movieID")
+            if (deserialized.has("actorId") && deserialized.has("movieId")
             ) {
-                actorID = deserialized.getString("actorID");
-                movieId = deserialized.getString("movieID");
+                actorID = deserialized.getString("actorId");
+                movieId = deserialized.getString("movieId");
 
             } else {
                 exchange.sendResponseHeaders(400, -1);
@@ -205,9 +205,9 @@ public class ReqHandler implements HttpHandler {
 
             String actorID;
 
-            if (deserialized.has("actorID")) {
+            if (deserialized.has("actorId")) {
 
-                actorID = deserialized.getString("actorID");
+                actorID = deserialized.getString("actorId");
 
             } else {
                 exchange.sendResponseHeaders(400, -1);
@@ -246,9 +246,9 @@ public class ReqHandler implements HttpHandler {
 
             String movieID;
 
-            if (deserialized.has("movieID")) {
+            if (deserialized.has("movieId")) {
 
-                movieID = deserialized.getString("movieID");
+                movieID = deserialized.getString("movieId");
 
             } else {
                 exchange.sendResponseHeaders(400, -1);
@@ -286,10 +286,10 @@ public class ReqHandler implements HttpHandler {
 
             String actorID, movieId;
 
-            if (deserialized.has("actorID") && deserialized.has("movieID")
+            if (deserialized.has("actorId") && deserialized.has("movieId")
             ) {
-                actorID = deserialized.getString("actorID");
-                movieId = deserialized.getString("movieID");
+                actorID = deserialized.getString("actorId");
+                movieId = deserialized.getString("movieId");
 
             } else {
                 exchange.sendResponseHeaders(400, -1);
@@ -329,8 +329,8 @@ public class ReqHandler implements HttpHandler {
 
             String actorID;
 
-            if (deserialized.has("actorID")) {
-                actorID = deserialized.getString("actorID");
+            if (deserialized.has("actorId")) {
+                actorID = deserialized.getString("actorId");
             } else {
                 exchange.sendResponseHeaders(400, -1);
                 return;
@@ -371,9 +371,9 @@ public class ReqHandler implements HttpHandler {
 
             String actorID;
 
-            if (deserialized.has("actorID")) {
+            if (deserialized.has("actorId")) {
 
-                actorID = deserialized.getString("actorID");
+                actorID = deserialized.getString("actorId");
 
             } else {
                 exchange.sendResponseHeaders(400, -1);
