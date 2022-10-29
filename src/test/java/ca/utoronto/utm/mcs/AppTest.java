@@ -148,8 +148,9 @@ public class AppTest {
         HttpResponse<String> confirmRes = sendRequest("/api/v1/getMovie", "GET", confirmReq.toString());
         JSONObject response = new JSONObject();
         List<Object> a = new ArrayList<>();
-        a.add("nm0000102");
         a.add("nm1001213");
+        a.add("nm0000102");
+
 
 
         response.put("movieId", "nm7001453");
@@ -179,7 +180,7 @@ public class AppTest {
         HttpResponse<String> confirmRes = sendRequest("/api/v1/hasRelationship", "GET", confirmReq.toString());
 
         assertEquals(HttpURLConnection.HTTP_OK, confirmRes.statusCode());
-        JSONObject a = new JSONObject("{ \"actorId\": \"nm1001231\", \"movieId\": \"nm1251671\", \"hasRelationship\": true}");
+        JSONObject a = new JSONObject("{ \"actorId\": \"nm1001213\", \"movieId\": \"nm7001453\", \"hasRelationship\": true}");
         assertEquals(a.toString(),confirmRes.body());
     }
     @Test

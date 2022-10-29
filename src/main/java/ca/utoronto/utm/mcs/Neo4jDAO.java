@@ -166,7 +166,7 @@ public class Neo4jDAO {
 
             response.put("actorId", actorID);
             response.put("movieId", movieID);
-            response.put("hasRelationship", "true");
+            response.put("hasRelationship", true);
             return response;
         }
         else {
